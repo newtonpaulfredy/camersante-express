@@ -99,12 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signupForm) {
         signupForm.addEventListener('submit', async(e) => {
             e.preventDefault();
-
-            const fullName = document.getElementById('fullName') ? .value.trim() || 'Utilisateur';
-            const email = document.getElementById('email') ? .value.trim() || '';
-            const phone = document.getElementById('phone') ? .value.trim() || '';
-            const city = document.getElementById('citySelect') ? .value || '';
-            const password = document.getElementById('password') ? .value || '';
+            const fullName = document.getElementById('fullName')?.value.trim() || 'Utilisateur';
+            const email = document.getElementById('email')?.value.trim() || '';
+            const phone = document.getElementById('phone')?.value.trim() || '';
+            const city = document.getElementById('citySelect')?.value || '';
+            const password = document.getElementById('password')?.value || '';
 
             try {
                 const response = await fetch(`${API_URL}/register`, {
