@@ -148,8 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', async(e) => {
             e.preventDefault();
 
-            const email = document.getElementById('loginEmail') ? .value.trim() || '';
-            const password = document.getElementById('loginPassword') ? .value || '';
+            const loginEmailElement = document.getElementById('loginEmail');
+            const email = loginEmailElement ? loginEmailElement.value.trim() :
+                '';
+            const loginpasswordElement = document.getElementById('loginPassword');
+            const password = loginpasswordElement ? loginpasswordElement.value : '';
 
             try {
                 let response = await fetch(`${API_URL}/auth/login`, {
