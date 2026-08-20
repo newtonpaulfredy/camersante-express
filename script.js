@@ -1,6 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = "/api"; // Remplace par ton URL Render une fois en ligne
 
+    const API_URL = "/api"; // Remplace par ton URL Render une fois en ligne
+    const registerForm = document.getElementById('register-form'); // Remplace par l'ID de ton formulaire
+
+    registerForm.addEventListener('submit', async(e) => {
+        // 1. Bloque le rechargement automatique de la page
+        e.preventDefault();
+
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+                // 2. Bascule vers l'onglet connexion seulement en cas de succès
+                showLoginForm();
+            } else {
+                // Affiche l'erreur renvoyée par FastAPI sans changer de page
+                alert("Erreur d'inscription : " + (data.detail || "Vérifiez vos informations"));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Impossible de contacter le serveur.");
+        }
+    });
     // ÉLÉMENTS DOM
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
@@ -303,4 +334,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterCity) filterCity.addEventListener('change', applyFilters);
     if (searchQuery) searchQuery.addEventListener('input', applyFilters);
     if (filterGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+if (filterGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+(filterGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+(filterGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+lterGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+rGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+rdeOnly) filterGardeOnly.addEventListener('change', applyFilters);
+});
+Only) filterGardeOnly.addEventListener('change', applyFilters);
+});
+Only) filterGardeOnly.addEventListener('change', applyFilters);
 });
