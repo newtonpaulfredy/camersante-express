@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = "/api";
-    function showLogin() {
+function showLogin() {
         document.getElementById('tabLogin').classList.add('active');
         document.getElementById('tabSignup').classList.remove('active');
         document.getElementById('loginForm').classList.remove('hidden');
@@ -12,6 +10,9 @@ function showSignup() {
     document.getElementById('signupForm').classList.remove('hidden');
     document.getElementById('loginForm').classList.add('hidden');
 }
+document.addEventListener('DOMContentLoaded'), () => {
+    const API_URL = "/api";
+    
     // ÉLÉMENTS DOM AUTHENTIFICATION
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
