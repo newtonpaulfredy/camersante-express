@@ -11,14 +11,14 @@
 
 <body class="animated-bg">
 
-    <!-- BANNIÈRE DE TEXTE QUI CIRCULE -->
+    <!-- BANNIÈRE DE TEXTE DÉFILANTE -->
     <div class="ticker-wrap">
         <div class="ticker-text">
             🚨 CamerSanté Express — Urgences & Pharmacies de garde en temps réel à Yaoundé, Douala, Bafoussam, Garoua, Maroua, Bamenda et dans tout le Cameroun ! 🇨🇲
         </div>
     </div>
 
-    <!-- OVERLAY AUTHENTIFICATION (CONNEXION / INSCRIPTION) -->
+    <!-- OVERLAY AUTHENTIFICATION -->
     <div id="authOverlay" class="auth-overlay">
         <div class="auth-card">
             <div class="brand-header">
@@ -59,12 +59,12 @@
                 <div class="input-group">
                     <label for="citySelect">Ville de résidence</label>
                     <select id="citySelect" required>
-            <option value="" disabled selected>Sélectionnez votre ville</option>
-            <option value="Yaoundé">Yaoundé</option>
-            <option value="Douala">Douala</option>
-            <option value="Bafoussam">Bafoussam</option>
-            <option value="Garoua">Garoua</option>
-        </select>
+                        <option value="" disabled selected>Sélectionnez votre ville</option>
+                        <option value="Yaoundé">Yaoundé</option>
+                        <option value="Douala">Douala</option>
+                        <option value="Bafoussam">Bafoussam</option>
+                        <option value="Garoua">Garoua</option>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label for="password">Mot de passe</label>
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <!-- PAGE PRINCIPALE -->
+    <!-- APPLICATION PRINCIPALE -->
     <div id="appContainer" class="app-container hidden">
         <header class="app-header">
             <div class="logo">
@@ -96,21 +96,21 @@
             <aside class="sidebar">
                 <div class="filter-box">
                     <button id="btnGeolocate" class="btn-primary" type="button" style="margin-bottom: 12px; background: #059669; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            📍 Me géolocaliser
-        </button>
+                        📍 Me géolocaliser
+                    </button>
                     <div class="input-group">
                         <label for="filterCity">Filtrer par Ville</label>
                         <select id="filterCity">
-            <option value="Toutes">Toutes les villes</option>
-            <option value="Yaoundé">Yaoundé</option>
-            <option value="Douala">Douala</option>
-            <option value="Bafoussam">Bafoussam</option>
-            <option value="Garoua">Garoua</option>
-            </select>
+                            <option value="Toutes">Toutes les villes</option>
+                            <option value="Yaoundé">Yaoundé</option>
+                            <option value="Douala">Douala</option>
+                            <option value="Bafoussam">Bafoussam</option>
+                            <option value="Garoua">Garoua</option>
+                        </select>
                     </div>
                     <div class="input-group">
-                        <label for="searchQuery">Rechercher (quartier, nom,Médicament)</label>
-                        <input type="text" id="searchQuery" placeholder="Ex: Bastos, Paracétamol,Efferalgan...">
+                        <label for="searchQuery">Rechercher (quartier, nom, médicament)</label>
+                        <input type="text" id="searchQuery" placeholder="Ex: Bastos, Paracétamol, Efferalgan...">
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="filterGardeOnly" checked>
@@ -146,29 +146,28 @@
         </div>
     </div>
 
-    <!-- MODAL ADMINISTRATION (CRUD) -->
+    <!-- MODAL ADMINISTRATION -->
     <div id="adminModal" class="modal hidden">
         <div class="modal-content" style="max-width: 750px; width: 95%; max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="color: #8b5cf6;">🛠️ Panneau d'Administration - Pharmacies</h3>
+                <h3 style="color: #8b5cf6;">🛠️ Panneau d'Administration</h3>
                 <button id="btnCloseAdmin" class="btn-secondary" type="button">✕ Fermer</button>
             </div>
 
-            <!-- FORMULAIRE D'AJOUT DE PHARMACIE -->
-            <form id="addPharmacyForm" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
-                <h4 style="margin-bottom: 10px; font-size: 14px; color: #334155;">➕ Ajouter une nouvelle pharmacie</h4>
+            <form id="addPharmacyForm" style="background: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                <h4 style="margin-bottom: 10px; font-size: 14px; color: var(--text-light);">➕ Ajouter une nouvelle pharmacie</h4>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
-                    <input type="text" id="adminNom" placeholder="Nom (Ex: Pharmacie du Centre)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                    <select id="adminVille" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-            <option value="Yaoundé">Yaoundé</option>
-            <option value="Douala">Douala</option>
-            <option value="Bafoussam">Bafoussam</option>
-            <option value="Garoua">Garoua</option>
-        </select>
-                    <input type="text" id="adminQuartier" placeholder="Quartier (Ex: Bastos)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                    <input type="tel" id="adminTel" placeholder="Téléphone (Ex: 699001122)" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                    <input type="number" step="any" id="adminLat" placeholder="Latitude (Ex: 3.8480)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                    <input type="number" step="any" id="adminLng" placeholder="Longitude (Ex: 11.5021)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <input type="text" id="adminNom" placeholder="Nom (Ex: Pharmacie du Centre)" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #1e293b; color: white;">
+                    <select id="adminVille" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #1e293b; color: white;">
+                        <option value="Yaoundé">Yaoundé</option>
+                        <option value="Douala">Douala</option>
+                        <option value="Bafoussam">Bafoussam</option>
+                        <option value="Garoua">Garoua</option>
+                    </select>
+                    <input type="text" id="adminQuartier" placeholder="Quartier (Ex: Bastos)" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #1e293b; color: white;">
+                    <input type="tel" id="adminTel" placeholder="Téléphone (Ex: 699001122)" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #1e293b; color: white;">
+                    <input type="number" step="any" id="adminLat" placeholder="Latitude (Ex: 3.8480)" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #1e293b; color: white;">
+                    <input type="number" step="any" id="adminLng" placeholder="Longitude (Ex: 11.5021)" required style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #1e293b; color: white;">
                 </div>
                 <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                     <label style="font-size: 13px;"><input type="checkbox" id="adminGarde" checked> Est de garde</label>
@@ -176,12 +175,11 @@
                 </div>
             </form>
 
-            <!-- TABLEAU DE GESTION -->
-            <h4 style="margin-bottom: 10px; font-size: 14px; color: #334155;">📋 Liste des pharmacies enregistrées</h4>
+            <h4 style="margin-bottom: 10px; font-size: 14px; color: var(--text-light);">📋 Liste des pharmacies enregistrées</h4>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
                     <thead>
-                        <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                        <tr style="background: #0f172a; border-bottom: 2px solid var(--border-color);">
                             <th style="padding: 8px;">Nom</th>
                             <th style="padding: 8px;">Ville / Quartier</th>
                             <th style="padding: 8px;">Téléphone</th>

@@ -30,6 +30,10 @@ body {
     overflow-x: hidden;
 }
 
+.hidden {
+    display: none !important;
+}
+
 
 /* --- BANNIÈRE DÉFILANTE --- */
 
@@ -61,13 +65,13 @@ body {
 }
 
 
-/* --- OVERLAY AUTHENTIFICATION --- */
+/* --- OVERLAY AUTHENTIFICATION AVEC IMAGE MÉDECIN EN BACKGROUND --- */
 
 .auth-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(8px);
+    background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,13 +80,14 @@ body {
 }
 
 .auth-card {
-    background: var(--card-bg);
+    background: rgba(30, 41, 59, 0.95);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 28px;
     width: 100%;
     max-width: 420px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
 }
 
 .brand-header {
@@ -235,6 +240,7 @@ body {
 .typewriter-container {
     font-size: 12px;
     color: var(--text-muted);
+    margin-top: 2px;
 }
 
 .typewriter-highlight {
@@ -331,6 +337,7 @@ body {
     font-size: 15px;
     margin-bottom: 4px;
     padding-right: 60px;
+    color: #38bdf8;
 }
 
 .pharmacy-card p {
@@ -412,10 +419,6 @@ body {
     border-radius: 6px;
     border-left: 4px solid var(--danger);
     font-size: 14px;
-}
-
-.hidden {
-    display: none !important;
 }
 
 
