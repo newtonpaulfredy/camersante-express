@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signupForm');
     const authOverlay = document.getElementById('authOverlay');
     const appContainer = document.getElementById('appContainer');
+    //gestion du changement d'onglet
 
     // ÉLÉMENTS DOM MODAUX
     const btnUrgence = document.getElementById('btnUrgence');
