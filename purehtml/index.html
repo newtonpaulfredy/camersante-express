@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CamerSanté Express</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body class="animated-bg">
+
+    <!-- BANNIÈRE DE TEXTE QUI CIRCULE -->
+    <div class="ticker-wrap">
+        <div class="ticker-text">
+            🚨 CamerSanté Express — Urgences & Pharmacies de garde en temps réel à Yaoundé, Douala, Bafoussam, Garoua, Maroua, Bamenda et dans tout le Cameroun ! 🇨🇲
+        </div>
+    </div>
+
+    <!-- OVERLAY AUTHENTIFICATION (CONNEXION / INSCRIPTION) -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-card">
+            <div class="brand-header">
+                <h1>CamerSanté <span>Express</span></h1>
+                <p>Géolocalisation des pharmacies de garde</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button id="tabLogin" class="tab-btn active" type="button">Se Connecter</button>
+                <button id="tabSignup" class="tab-btn" type="button">Créer un compte</button>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="input-group">
+                    <label for="loginEmail">Adresse Email</label>
+                    <input type="email" id="loginEmail" placeholder="votre@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="loginPassword">Mot de passe</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary">Se Connecter</button>
+            </form>
+
+            <form id="signupForm" class="auth-form hidden">
+                <div class="input-group">
+                    <label for="fullName">Nom complet</label>
+                    <input type="text" id="fullName" placeholder="Ex: Ayissi Paul" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Adresse Email</label>
+                    <input type="email" id="email" placeholder="votre@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Numéro de Téléphone</label>
+                    <input type="tel" id="phone" placeholder="699001122" pattern="^[6][0-9]{8}$" required>
+                </div>
+                <div class="input-group">
+                    <label for="citySelect">Ville de résidence</label>
+                    <select id="citySelect" required>
+            <option value="" disabled selected>Sélectionnez votre ville</option>
+            <option value="Yaoundé">Yaoundé</option>
+            <option value="Douala">Douala</option>
+            <option value="Bafoussam">Bafoussam</option>
+            <option value="Garoua">Garoua</option>
+        </select>
+                </div>
+                <div class="input-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" placeholder="••••••••" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-primary">Créer mon compte</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAGE PRINCIPALE -->
+    <div id="appContainer" class="app-container hidden">
+        <header class="app-header">
+            <div class="logo">
+                <h2>CamerSanté <span>Express</span></h2>
+                <div class="typewriter-container">
+                    <span>Besoin de : </span><span id="typewriterText" class="typewriter-highlight"></span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <span id="userNameDisplay">Bienvenue</span>
+                <button id="btnAdmin" class="btn-secondary" type="button" style="background: #8b5cf6;">🛠️ Admin</button>
+                <button id="btnUrgence" class="btn-urgence" type="button">🚨 Urgences</button>
+                <button id="btnLogout" class="btn-secondary" type="button">Déconnexion</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="filter-box">
+                    <button id="btnGeolocate" class="btn-primary" type="button" style="margin-bottom: 12px; background: #059669; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            📍 Me géolocaliser
+        </button>
+                    <div class="input-group">
+                        <label for="filterCity">Filtrer par Ville</label>
+                        <select id="filterCity">
+            <option value="Toutes">Toutes les villes</option>
+            <option value="Yaoundé">Yaoundé</option>
+            <option value="Douala">Douala</option>
+            <option value="Bafoussam">Bafoussam</option>
+            <option value="Garoua">Garoua</option>
+            </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="searchQuery">Rechercher (quartier, nom,Médicament)</label>
+                        <input type="text" id="searchQuery" placeholder="Ex: Bastos, Paracétamol,Efferalgan...">
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="filterGardeOnly" checked>
+                        <label for="filterGardeOnly">Pharmacies de garde uniquement</label>
+                    </div>
+                </div>
+
+                <div class="results-header">
+                    <span>Pharmacies disponibles</span>
+                    <span id="resultCount" class="badge">0 trouvée(s)</span>
+                </div>
+
+                <div id="pharmacyList" class="pharmacy-list"></div>
+            </aside>
+
+            <main class="map-wrapper">
+                <div id="map"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL URGENCES -->
+    <div id="urgenceModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>🚨 Numéros d'Urgence - Cameroun</h3>
+            <ul class="emergency-list">
+                <li>📞 <strong>SAMU :</strong> 119</li>
+                <li>📞 <strong>Sapeurs-Pompiers :</strong> 118</li>
+                <li>📞 <strong>Police Secours :</strong> 117 / 1500</li>
+                <li>📞 <strong>Gendarmerie Nationale :</strong> 113</li>
+            </ul>
+            <button id="btnCloseUrgence" class="btn-primary" type="button">Fermer</button>
+        </div>
+    </div>
+
+    <!-- MODAL ADMINISTRATION (CRUD) -->
+    <div id="adminModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 750px; width: 95%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: #8b5cf6;">🛠️ Panneau d'Administration - Pharmacies</h3>
+                <button id="btnCloseAdmin" class="btn-secondary" type="button">✕ Fermer</button>
+            </div>
+
+            <!-- FORMULAIRE D'AJOUT DE PHARMACIE -->
+            <form id="addPharmacyForm" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                <h4 style="margin-bottom: 10px; font-size: 14px; color: #334155;">➕ Ajouter une nouvelle pharmacie</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                    <input type="text" id="adminNom" placeholder="Nom (Ex: Pharmacie du Centre)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <select id="adminVille" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+            <option value="Yaoundé">Yaoundé</option>
+            <option value="Douala">Douala</option>
+            <option value="Bafoussam">Bafoussam</option>
+            <option value="Garoua">Garoua</option>
+        </select>
+                    <input type="text" id="adminQuartier" placeholder="Quartier (Ex: Bastos)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <input type="tel" id="adminTel" placeholder="Téléphone (Ex: 699001122)" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <input type="number" step="any" id="adminLat" placeholder="Latitude (Ex: 3.8480)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <input type="number" step="any" id="adminLng" placeholder="Longitude (Ex: 11.5021)" required style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                </div>
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <label style="font-size: 13px;"><input type="checkbox" id="adminGarde" checked> Est de garde</label>
+                    <button type="submit" class="btn-primary" style="width: auto; padding: 8px 16px; margin: 0; background: #8b5cf6;">Enregistrer la pharmacie</button>
+                </div>
+            </form>
+
+            <!-- TABLEAU DE GESTION -->
+            <h4 style="margin-bottom: 10px; font-size: 14px; color: #334155;">📋 Liste des pharmacies enregistrées</h4>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
+                    <thead>
+                        <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                            <th style="padding: 8px;">Nom</th>
+                            <th style="padding: 8px;">Ville / Quartier</th>
+                            <th style="padding: 8px;">Téléphone</th>
+                            <th style="padding: 8px;">Statut</th>
+                            <th style="padding: 8px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminPharmacyTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    
+    
+</body>
+
+</html>
