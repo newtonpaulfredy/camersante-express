@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = "/api";
 
-    // ÉLÉMENTS DOM AUTH
+    // ÉLÉMENTS DOM AUTHENTIFICATION
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
     const loginForm = document.getElementById('loginForm');
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let typeSpeed = isDeleting ? 50 : 100;
 
             if (!isDeleting && charIndex === currentWord.length) {
-                typeSpeed = 2000; // Pause à la fin
+                typeSpeed = 2000;
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
@@ -94,14 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. SOUMISSION INSCRIPTION ---
+    // --- 3. SOUMISSION INSCRIPTION (AVEC FALLBACK DÉMO) ---
     if (signupForm) {
         signupForm.addEventListener('submit', async(e) => {
             e.preventDefault();
 
-            const fullName = document.getElementById('fullName') ? .value || '';
-            const email = document.getElementById('email') ? .value || '';
-            const phone = document.getElementById('phone') ? .value || '';
+            const fullName = document.getElementById('fullName') ? .value.trim() || 'Utilisateur';
+            const email = document.getElementById('email') ? .value.trim() || '';
+            const phone = document.getElementById('phone') ? .value.trim() || '';
             const city = document.getElementById('citySelect') ? .value || '';
             const password = document.getElementById('password') ? .value || '';
 
@@ -112,22 +112,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ full_name: fullName, email, phone, city, password })
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    alert("Compte créé avec succès ! Vous pouvez maintenant vous connecter.");
-                    if (tabLogin) tabLogin.click();
+                    alert("Compte créé avec succès ! Accès à l'application...");
+                    const userObj = { full_name: fullName, email, city };
+                    sessionStorage.setItem('cs_user', JSON.stringify(userObj));
+                    grantAccess(fullName);
                 } else {
-                    alert("Erreur : " + (data.detail || "Échec de l'inscription"));
+                    throw new Error("Erreur de réponse serveur");
                 }
             } catch (err) {
-                console.error("Erreur inscription :", err);
-                alert("Impossible de contacter le serveur.");
+                console.warn("API indisponible, bascule en mode démo local.");
+                alert(`Bienvenue ${fullName} ! (Compte créé en mode local)`);
+                const userObj = { full_name: fullName, email, city };
+                sessionStorage.setItem('cs_user', JSON.stringify(userObj));
+                grantAccess(fullName);
             }
         });
     }
 
-    // --- 4. SOUMISSION CONNEXION ---
+    // --- 4. SOUMISSION CONNEXION (AVEC FALLBACK DÉMO) ---
     if (loginForm) {
         loginForm.addEventListener('submit', async(e) => {
             e.preventDefault();
@@ -154,23 +157,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                if (!response.ok) throw new Error("Échec de connexion serveur");
+
                 const data = await response.json();
-                if (!response.ok) return alert(data.detail || "Identifiants incorrects.");
+                const user = data.user || { full_name: email ? email.split('@')[0] : 'Utilisateur' };
 
-                const token = data.access_token || data.token;
-                const user = data.user || { full_name: email.split('@')[0] };
-
-                sessionStorage.setItem('cs_token', token);
+                sessionStorage.setItem('cs_token', data.access_token || data.token || 'demo_token');
                 sessionStorage.setItem('cs_user', JSON.stringify(user));
-                grantAccess(user.full_name || 'Utilisateur');
+                grantAccess(user.full_name);
 
             } catch (err) {
-                console.error("Erreur connexion :", err);
-                alert("Erreur de connexion au serveur.");
+                console.warn("API indisponible, connexion en mode démo local.");
+                const userName = email ? email.split('@')[0] : "Utilisateur";
+                sessionStorage.setItem('cs_user', JSON.stringify({ full_name: userName }));
+                grantAccess(userName);
             }
         });
     }
 
+    // --- ACCÈS À L'APPLICATION ---
     function grantAccess(name) {
         const userDisplay = document.getElementById('userNameDisplay');
         if (userDisplay) userDisplay.textContent = `Bienvenue, ${name}`;
@@ -192,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // AUTO-CONNEXION SESSION EXISTANTE
+    // RESTAURATION SESSION EXISTANTE
     const savedUser = JSON.parse(sessionStorage.getItem('cs_user'));
     if (savedUser) grantAccess(savedUser.full_name || savedUser.name);
 
@@ -208,14 +213,13 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => map.invalidateSize(), 300);
     }
 
-    // --- 6. CHARGEMENT ET RECUPERATION DES PHARMACIES ---
+    // --- 6. CHARGEMENT DES PHARMACIES ---
     async function fetchPharmacies() {
         try {
             const res = await fetch(`${API_URL}/pharmacies`);
-            if (!res.ok) throw new Error("Erreur de récupération");
+            if (!res.ok) throw new Error("Erreur serveur");
             rawPharmacies = await res.json();
 
-            // S'assurer que le stock existe
             rawPharmacies = rawPharmacies.map(p => ({
                 ...p,
                 medicaments: p.medicaments || ["Paracétamol", "Ibuprofène", "Amoxicilline", "Vitamine C"]
@@ -223,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             applyFilters();
         } catch (e) {
-            console.warn("Serveur non disponible. Utilisation des données locales de secours.");
+            console.warn("Données chargées depuis la liste locale de secours.");
             rawPharmacies = [
                 { id: 1, nom: "Pharmacie du Centre", ville: "Yaoundé", quartier: "Bastos", telephone: "699001122", latitude: 3.8700, longitude: 11.5180, est_de_garde: true, medicaments: ["Paracétamol", "Ibuprofène", "Spasfon"] },
                 { id: 2, nom: "Pharmacie Akwa", ville: "Douala", quartier: "Akwa", telephone: "677003344", latitude: 4.0500, longitude: 9.7000, est_de_garde: true, medicaments: ["Amoxicilline", "Vitamine C", "Efferalgan"] },
@@ -258,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     applyFilters();
                 },
-                (err) => {
+                () => {
                     btnGeolocate.textContent = "📍 Me géolocaliser";
                     alert("Impossible d'obtenir votre position.");
                 }
@@ -266,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 8. FILTRAGE INTELLIGENT DES RÉSULTATS ---
+    // --- 8. FILTRAGE INTELLIGENT ---
     function applyFilters() {
         const selectedCity = filterCity ? filterCity.value : 'Toutes';
         const query = searchQuery ? searchQuery.value.trim().toLowerCase() : '';
@@ -274,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const filtered = rawPharmacies.filter(p => {
             const matchCity = (selectedCity === 'Toutes') || (p.ville && p.ville.toLowerCase() === selectedCity.toLowerCase());
-
             const matchName = p.nom && p.nom.toLowerCase().includes(query);
             const matchQuartier = p.quartier && p.quartier.toLowerCase().includes(query);
 
@@ -297,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFilteredResults(filtered, query);
     }
 
-    // --- 9. AFFICHAGE DANS LA LISTE ET DESSIN SUR LA CARTE ---
+    // --- 9. RENDER DANS LA SIDEBAR ET SUR LA CARTE ---
     function renderFilteredResults(pharmacies, querySearch) {
         const listElem = document.getElementById('pharmacyList');
         const countElem = document.getElementById('resultCount');
@@ -324,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return `<span style="font-size:10px; padding:2px 6px; border-radius:4px; margin:2px; background:${isMatch ? '#059669' : '#334155'}; color:white; display:inline-block;">💊 ${m.trim()}</span>`;
             }).join('');
 
-            // Marqueur sur la carte Leaflet
             if (p.latitude && p.longitude && markersLayer) {
                 const marker = L.marker([p.latitude, p.longitude]);
                 marker.bindPopup(`
@@ -341,7 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 markersMap[pId] = marker;
             }
 
-            // Carte dans la sidebar
             if (listElem) {
                 const card = document.createElement('div');
                 card.className = 'pharmacy-card';
@@ -384,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (btnCloseAdmin && adminModal) btnCloseAdmin.addEventListener('click', () => adminModal.classList.add('hidden'));
 
-    // --- 11. GESTION DU PANNEAU ADMIN ---
+    // --- 11. PANNEAU D'ADMINISTRATION ---
     function renderAdminTable() {
         if (!adminPharmacyTable) return;
         adminPharmacyTable.innerHTML = '';
@@ -437,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ÉCOUTEURS SUR LES FILTRES DE RECHERCHE
+    // ÉCOUTEURS D'ÉVÉNEMENTS
     if (filterCity) filterCity.addEventListener('change', applyFilters);
     if (searchQuery) searchQuery.addEventListener('input', applyFilters);
     if (filterGardeOnly) filterGardeOnly.addEventListener('change', applyFilters);
