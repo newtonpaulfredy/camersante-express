@@ -17,8 +17,7 @@
             🚨 CamerSanté Express — Urgences & Pharmacies de garde en temps réel à Yaoundé, Douala, Bafoussam, Garoua, Maroua, Bamenda et dans tout le Cameroun ! 🇨🇲
         </div>
     </div>
-
-    <!-- OVERLAY AUTHENTIFICATION -->
+<!-- OVERLAY AUTHENTIFICATION -->
     <div id="authOverlay" class="auth-overlay">
         <div class="auth-card">
             <div class="brand-header">
@@ -27,11 +26,22 @@
             </div>
 
             <div class="auth-tabs">
-                <button id="tabLogin" class="tab-btn active" type="button" onclick="showLogin()">Se Connecter</button>
-                <button id="tabSignup" class="tab-btn" type="button" onclick="showsignup()">Créer un compte</button>
+                <button id="tabLogin" class="tab-btn active" type="button" onclick="
+                    document.getElementById('loginForm').style.display='flex';
+                    document.getElementById('signupForm').style.display='none';
+                    this.classList.add('active');
+                    document.getElementById('tabSignup').classList.remove('active');
+                ">Se Connecter</button>
+                
+                <button id="tabSignup" class="tab-btn" type="button" onclick="
+                    document.getElementById('loginForm').style.display='none';
+                    document.getElementById('signupForm').style.display='flex';
+                    this.classList.add('active');
+                    document.getElementById('tabLogin').classList.remove('active');
+                ">Créer un compte</button>
             </div>
 
-            <form id="loginForm" class="auth-form">
+            <form id="loginForm" class="auth-form" style="display: flex; flex-direction: column; gap: 15px;">
                 <div class="input-group">
                     <label for="loginEmail">Adresse Email</label>
                     <input type="email" id="loginEmail" placeholder="votre@email.com" required>
@@ -43,7 +53,7 @@
                 <button type="submit" class="btn-primary">Se Connecter</button>
             </form>
 
-            <form id="signupForm" class="auth-form hidden">
+            <form id="signupForm" class="auth-form" style="display: none; flex-direction: column; gap: 15px;">
                 <div class="input-group">
                     <label for="fullName">Nom complet</label>
                     <input type="text" id="fullName" placeholder="Ex: Ayissi Paul" required>
