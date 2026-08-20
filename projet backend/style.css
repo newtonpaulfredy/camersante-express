@@ -30,7 +30,7 @@ body {
     overflow-x: hidden;
 }
 
-.hidden {
+.hidden,form.hidden,#signupForm.hidden,#loginForm.hidden {
     display: none !important;
 }
 
