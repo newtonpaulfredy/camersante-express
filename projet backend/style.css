@@ -452,7 +452,8 @@ body {
     .brand-header h1 {
         font-size: 20px;
     }
-}.auth-overlay.hidden,
-.hidden{
+}
+
+.auth-overlay.hidden,.hidden{
     display:none !important;
 }
