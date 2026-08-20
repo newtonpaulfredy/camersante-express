@@ -1,39 +1,73 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = "/api";
 
-    // 1. Gestion du changement d'onglets (Connexion / Inscription)
+    // ÉLÉMENTS DOM
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
 
-    if (tabLogin && tabSignup) {
-        tabLogin.addEventListener('click', () => {
-            tabLogin.classList.add('active');
-            tabSignup.classList.remove('active');
-            loginForm.classList.remove('hidden');
-            signupForm.classList.add('hidden');
-        });
-
-        tabSignup.addEventListener('click', () => {
+    // 1. BASCULE ENTRE LES ONGLETS
+    if (tabSignup) {
+        tabSignup.addEventListener('click', (e) => {
+            e.preventDefault();
             tabSignup.classList.add('active');
-            tabLogin.classList.remove('active');
-            signupForm.classList.remove('hidden');
-            loginForm.classList.add('hidden');
+            if (tabLogin) tabLogin.classList.remove('active');
+            if (signupForm) signupForm.classList.remove('hidden');
+            if (loginForm) loginForm.classList.add('hidden');
         });
     }
 
-    // 2. Gestion de l'inscription (signupForm)
+    if (tabLogin) {
+        tabLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            tabLogin.classList.add('active');
+            if (tabSignup) tabSignup.classList.remove('active');
+            if (loginForm) loginForm.classList.remove('hidden');
+            if (signupForm) signupForm.classList.add('hidden');
+        });
+    }
+
+    // 2. SOUMISSION DU FORMULAIRE DE CONNEXION
+    if (loginForm) {
+        loginForm.addEventListener('submit', async(e) => {
+            e.preventDefault(); // BLOQUE LE RAFRAÎCHISSEMENT DE LA PAGE
+
+            const email = document.getElementById('loginEmail') ? .value;
+            const password = document.getElementById('loginPassword') ? .value;
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Connexion réussie !");
+                    // Masque le modal d'authentification si besoin
+                    const authOverlay = document.getElementById('authOverlay');
+                    if (authOverlay) authOverlay.classList.add('hidden');
+                } else {
+                    alert("Erreur : " + (data.detail || "Identifiants incorrects"));
+                }
+            } catch (err) {
+                console.error("Erreur connexion :", err);
+                alert("Impossible de contacter le serveur.");
+            }
+        });
+    }
+
+    // 3. SOUMISSION DU FORMULAIRE D'INSCRIPTION
     if (signupForm) {
         signupForm.addEventListener('submit', async(e) => {
-            e.preventDefault(); // Annule le rechargement automatique de la page
+            e.preventDefault(); // BLOQUE LE RAFRAÎCHISSEMENT DE LA PAGE
 
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-
-            // Note: Si tu as un champ mot de passe dans signupForm (plus bas dans le HTML),
-            // récupère-le aussi, par exemple :
+            const fullName = document.getElementById('fullName') ? .value;
+            const email = document.getElementById('email') ? .value;
+            const phone = document.getElementById('phone') ? .value;
             const passwordInput = signupForm.querySelector('input[type="password"]');
             const password = passwordInput ? passwordInput.value : '';
 
@@ -41,38 +75,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_URL}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        full_name: fullName,
-                        email: email,
-                        phone: phone,
-                        password: password
-                    })
+                    body: JSON.stringify({ full_name: fullName, email, phone, password })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert("Compte créé avec succès ! Vous pouvez vous connecter.");
-                    tabLogin.click(); // Bascule automatiquement sur l'onglet connexion
+                    alert("Compte créé avec succès !");
+                    if (tabLogin) tabLogin.click();
                 } else {
-                    alert("Erreur : " + (data.detail || "Impossible de créer le compte"));
+                    alert("Erreur : " + (data.detail || "Échec de l'inscription"));
                 }
             } catch (err) {
-                console.error("Erreur réseau :", err);
-                alert("Erreur de connexion au serveur.");
+                console.error("Erreur inscription :", err);
+                alert("Impossible de contacter le serveur.");
             }
         });
     }
-});
-// ÉLÉMENTS DOM
-const tabLogin = document.getElementById('tabLogin');
-const tabSignup = document.getElementById('tabSignup');
-const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
-const authOverlay = document.getElementById('authOverlay');
-const appContainer = document.getElementById('appContainer');
-
-// MODAUX
+}); // MODAUX
 const btnUrgence = document.getElementById('btnUrgence');
 const btnCloseUrgence = document.getElementById('btnCloseUrgence');
 const urgenceModal = document.getElementById('urgenceModal');
