@@ -1,18 +1,19 @@
 function showLogin() {
-        document.getElementById('tabLogin').classList.add('active');
-        document.getElementById('tabSignup').classList.remove('active');
-        document.getElementById('loginForm').classList.remove('hidden');
-        document.getElementById('signupForm').classList.add('hidden');
-    }
+    document.getElementById('tabLogin').classList.add('active');
+    document.getElementById('tabSignup').classList.remove('active');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('signupForm').classList.add('hidden');
+}
+
 function showSignup() {
     document.getElementById('tabSignup').classList.add('active');
     document.getElementById('tabLogin').classList.remove('active');
     document.getElementById('signupForm').classList.remove('hidden');
     document.getElementById('loginForm').classList.add('hidden');
 }
-document.addEventListener('DOMContentLoaded'), () => {
+document.addEventListener('DOMContentLoaded', () => {
     const API_URL = "/api";
-    
+
     // ÉLÉMENTS DOM AUTHENTIFICATION
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
@@ -111,11 +112,11 @@ document.addEventListener('DOMContentLoaded'), () => {
     if (signupForm) {
         signupForm.addEventListener('submit', async(e) => {
             e.preventDefault();
-            const fullName = document.getElementById('fullName')?.value.trim() || 'Utilisateur';
-            const email = document.getElementById('email')?.value.trim() || '';
-            const phone = document.getElementById('phone')?.value.trim() || '';
-            const city = document.getElementById('citySelect')?.value || '';
-            const password = document.getElementById('password')?.value || '';
+            const fullName = document.getElementById('fullName') ? .value.trim() || 'Utilisateur';
+            const email = document.getElementById('email') ? .value.trim() || '';
+            const phone = document.getElementById('phone') ? .value.trim() || '';
+            const city = document.getElementById('citySelect') ? .value || '';
+            const password = document.getElementById('password') ? .value || '';
 
             try {
                 const response = await fetch(`${API_URL}/register`, {
