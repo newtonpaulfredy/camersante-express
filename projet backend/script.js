@@ -1,6 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = "/api";
-
+    function showLogin() {
+        document.getElementById('tabLogin').classList.add('active');
+        document.getElementById('tabSignup').classList.remove('active');
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('signupForm').classList.add('hidden');
+    }
+function showSignup() {
+    document.getElementById('tabSignup').classList.add('active');
+    document.getElementById('tabLogin').classList.remove('active');
+    document.getElementById('signupForm').classList.remove('hidden');
+    document.getElementById('loginForm').classList.add('hidden');
+}
     // ÉLÉMENTS DOM AUTHENTIFICATION
     const tabLogin = document.getElementById('tabLogin');
     const tabSignup = document.getElementById('tabSignup');
