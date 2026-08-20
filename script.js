@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = "http://127.0.0.1:8000/api"; // Remplace par ton URL Render une fois en ligne
+    const API_URL = "/api"; // Remplace par ton URL Render une fois en ligne
 
     // ÉLÉMENTS DOM
     const tabLogin = document.getElementById('tabLogin');
